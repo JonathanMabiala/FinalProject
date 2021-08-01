@@ -7,10 +7,7 @@ public class Main {
 		// TODO Auto-generated method stub
 		
 		App app = new App();
-		//fileIo.createFile("my precious");
-		//fileIo.removeElement("my precious.txt");
 		app.load();
-
 
 	}
 
