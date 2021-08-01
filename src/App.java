@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class FileIO {
+
+public class App {
 
     private File file;
     private File[] fileList;
     private String path = Paths.get(".").toAbsolutePath().normalize().toString()+"/src";
     private FileWriter stream = null;
     private TreeSet<String> sortedList = new TreeSet<>();
+    private Scanner scanner = new Scanner(System.in);
+
 
 
     public String getPath(){
@@ -77,6 +80,42 @@ public class FileIO {
         }else{
             System.out.println("--------------------------------  File Not Found  ---------------------------");
             System.out.println("No element named " + name);
+        }
+    }
+
+
+    public void load(){
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("|                                  Welcome to LockedMe                               |");
+        System.out.println("|                                 Developed by Jonathan                              |");
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("--------------------------------------------------------------------------------------");
+
+
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+
+        System.out.println("1) List all files in the current directory.");
+        System.out.println("2) Add a file in the current directory. ");
+
+        int option = scanner.nextInt();
+        switch (option){
+            case 1 :
+                getFileList();
+                break;
+            case 2 :
+                System.out.println("Type in the file's name.");
+                String name = scanner.nextLine();
+                createFile(name);
+            default:
+                System.out.println("Option does not exist.");
+
+
         }
     }
 
