@@ -9,7 +9,7 @@ public class App {
 
     private File file;
     private File[] fileList;
-    private String path = Paths.get(".").toAbsolutePath().normalize().toString()+"/src";
+    private String path = Paths.get(".").toAbsolutePath().normalize().toString()+"/src/";
     private FileWriter stream = null;
     private TreeSet<String> sortedList = new TreeSet<>();
     private static Scanner scanner;
@@ -27,8 +27,11 @@ public class App {
         for(File list: this.fileList)
             sortedList.add(list.getName());
         System.out.println("---------------------------- File List ---------------------------------------");
-        for (String value: sortedList)
+        for (String value: sortedList) {
+        	if(value.equals("App.java") || value.equals("Main.java") )
+        		continue;
             System.out.println("> " + value);
+        }
         System.out.println("---------------------- *** End Of File List *** ------------------------------");
         menu();
 
