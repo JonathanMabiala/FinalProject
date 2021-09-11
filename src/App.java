@@ -9,7 +9,7 @@ public class App {
 
     private File file;
     private File[] fileList;
-    private String path = Paths.get(".").toAbsolutePath().normalize().toString()+"/src/";
+    private String path = Paths.get(".").toAbsolutePath().normalize()+"/APP_Files/";
     private FileWriter stream = null;
     private TreeSet<String> sortedList = new TreeSet<>();
     private static Scanner scanner;
@@ -22,23 +22,30 @@ public class App {
 
     public void  getFileList(){ // Fetches and lists all files in an ascending order.
         file = new File(this.path);
-        this.fileList = this.file.listFiles();
+        fileList = file.listFiles();
+        if (fileList != null) {
+            if(fileList.length != 0){
+                for(File list: fileList )
+                    sortedList.add(list.getName());
+                System.out.println("---------------------------- File List ---------------------------------------");
+                for (String value: sortedList) {
+                    if(value.equals("App.java") || value.equals("Main.java") )
+                        continue;
+                    System.out.println("> " + value);
+                }
+            }else {
+                System.out.println("---------------------------- File List ---------------------------------------");
+                System.out.println("                  NO FILES FOUND IN THE DIRECTORY                             ");
 
-        for(File list: this.fileList)
-            sortedList.add(list.getName());
-        System.out.println("---------------------------- File List ---------------------------------------");
-        for (String value: sortedList) {
-        	if(value.equals("App.java") || value.equals("Main.java") )
-        		continue;
-            System.out.println("> " + value);
+            }
+            System.out.println("---------------------- *** End Of File List *** ------------------------------");
+            menu();
         }
-        System.out.println("---------------------- *** End Of File List *** ------------------------------");
-        menu();
 
     }
 
     public void createFile(){ // Creates a file in the directory
-        System.out.println("Type in the file's name to be created and hit 'enter'.");
+        System.out.println("Type in the file's name to be created with its extension(.txt, .png, etc) and hit 'enter'.");
         scanner= new Scanner(System.in);
         String name = scanner.nextLine();
         try {
@@ -149,7 +156,8 @@ public class App {
             case 4 :
                 System.exit(0);
             default:
-                System.out.print("Option does not exist.");
+                System.out.println("Option does not exist.");
+                menu();
         }
     }
 
