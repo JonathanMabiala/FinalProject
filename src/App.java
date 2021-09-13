@@ -1,6 +1,10 @@
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -9,19 +13,19 @@ public class App {
 
     private File file;
     private File[] fileList;
-    private String path = Paths.get(".").toAbsolutePath().normalize()+"/APP_Files/";
-    private FileWriter stream = null;
+    private Path path = Paths.get(".").toAbsolutePath().normalize();
+    private final String directory = "/APP_FILES/";
     private static Scanner scanner;
 
 
 
     public String getPath(){ // Returns the path of a file
-       return path;
+       return path.toString() + directory;
     }
 
     public void  getFileList(){ // Fetches and lists all files in an ascending order.
     	TreeSet<String> sortedList = new TreeSet<>();
-        file = new File(this.path);
+        file = new File(this.path.toString()+ directory);
         fileList = file.listFiles();
         if (fileList != null) {
             if(fileList.length != 0){
@@ -49,19 +53,22 @@ public class App {
         System.out.println("Type in the file's name to be created with its extension(.txt, .png, etc) and hit 'enter'.");
         scanner= new Scanner(System.in);
         String name = scanner.nextLine();
+        Path createPath = Paths.get(path.toString()+ directory +name);
         try {
-            stream = new FileWriter(this.path + "/"+name);
-            System.out.println("**** A file named ' " +name + " ' has been created ******\r");
-            this.getFileList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                stream.close();
-                menu();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Create the empty file with default permissions, etc.
+            Files.createFile(createPath);
+            getFileList();
+		    fileOperations();
+        } catch (FileAlreadyExistsException x) {
+            System.err.format("file named %s" +
+                " already exists%n", file);
+            getFileList();
+		    fileOperations();
+        } catch (IOException x) {
+            // Some other sort of failure, such as permissions.
+            System.err.format("createFile error: %s%n", x);
+            getFileList();
+		    fileOperations();
         }
     }
 
@@ -69,25 +76,31 @@ public class App {
         System.out.println("Type in the file's name to be deleted then hit 'enter' / type 'cancel' to return to Home.");
         scanner = new Scanner(System.in);
         String name = scanner.nextLine();
-
-        if(name.equals("cancel") ) {
-            menu();
-        }else {
-            file = new File(path + "/" + name);
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("Deleted the file: " + file.getName());
-                    getFileList();
-                    menu();
-                } else {
-                    System.out.println("Failed to delete the file.");
-                    menu();
-                }
-            } else {
-                System.out.println("File does not exist / misspelled, consider case sensitivity and file extension");
-                menu();
-            }
-        }
+        Path delPath = Paths.get(path.toString()+ directory +name);
+        
+        try {
+		    Files.delete(delPath);
+		    System.out.println("Deleted the file: " + name);
+            getFileList();
+		    fileOperations();
+		} catch (NoSuchFileException x) {
+		    System.err.format("%s: no such" + " file or directory%n", delPath);
+		    getFileList();
+		    fileOperations();
+		} catch (DirectoryNotEmptyException x) {
+		    System.err.format("%s not empty%n", delPath);
+		    getFileList();
+		    fileOperations();
+		} catch (IOException x) {
+		    // File permission problems are caught here.
+		    System.err.println(x);
+		    getFileList();
+		    fileOperations();
+		}
+                
+                   
+            
+        
     }
 
     public void search(){
@@ -97,7 +110,7 @@ public class App {
         if(name.equals("cancel") ) {
             menu();
         }else {
-        file = new File(path +"/"+ name);
+        file = new File(path + directory + name);
 
         if(file.exists()){
             System.out.println("--------------------------------  Found File  -------------------------------");
