@@ -11,7 +11,6 @@ public class App {
     private File[] fileList;
     private String path = Paths.get(".").toAbsolutePath().normalize()+"/APP_Files/";
     private FileWriter stream = null;
-    private TreeSet<String> sortedList = new TreeSet<>();
     private static Scanner scanner;
 
 
@@ -21,6 +20,7 @@ public class App {
     }
 
     public void  getFileList(){ // Fetches and lists all files in an ascending order.
+    	TreeSet<String> sortedList = new TreeSet<>();
         file = new File(this.path);
         fileList = file.listFiles();
         if (fileList != null) {
@@ -35,6 +35,7 @@ public class App {
                 }
             }else {
                 System.out.println("---------------------------- File List ---------------------------------------");
+                
                 System.out.println("                  NO FILES FOUND IN THE DIRECTORY                             ");
 
             }
